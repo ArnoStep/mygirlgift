@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { PuzzleStage } from '../content';
 
 interface Props {
-  stage: PuzzleStage;
+  photo?: string;
+  caption: string;
   onComplete: () => void;
 }
 
@@ -20,18 +20,18 @@ function shuffledOrder(): number[] {
   return order;
 }
 
-export default function PhotoPuzzle({ stage, onComplete }: Props) {
+export default function PhotoPuzzle({ photo, caption, onComplete }: Props) {
   /** order[позиция в сетке] = индекс фрагмента картинки */
   const [order, setOrder] = useState<number[]>(shuffledOrder);
   const [selected, setSelected] = useState<number | null>(null);
   const [photoOk, setPhotoOk] = useState(false);
 
   useEffect(() => {
-    if (!stage.photo) return;
+    if (!photo) return;
     const img = new Image();
     img.onload = () => setPhotoOk(true);
-    img.src = stage.photo;
-  }, [stage.photo]);
+    img.src = photo;
+  }, [photo]);
 
   const solved = useMemo(() => order.every((v, i) => v === i), [order]);
 
@@ -75,8 +75,8 @@ export default function PhotoPuzzle({ stage, onComplete }: Props) {
               onClick={() => tap(pos)}
               aria-label={`Фрагмент ${piece + 1}`}
             >
-              {photoOk && stage.photo ? (
-                <img className="tile-media" src={stage.photo} alt="" style={{ ...mediaStyle, objectFit: 'cover' }} />
+              {photoOk && photo ? (
+                <img className="tile-media" src={photo} alt="" style={{ ...mediaStyle, objectFit: 'cover' }} />
               ) : (
                 <div
                   className="tile-media"
@@ -96,7 +96,7 @@ export default function PhotoPuzzle({ stage, onComplete }: Props) {
           );
         })}
       </div>
-      <p className="puzzle-caption">{stage.caption}</p>
+      <p className="puzzle-caption">{caption}</p>
       {!solved && <p className="puzzle-help">Нажми на два фрагмента, чтобы поменять их местами</p>}
     </div>
   );

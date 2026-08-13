@@ -17,6 +17,13 @@ export interface MemoryPair {
   label: string;
 }
 
+export interface StagePhoto {
+  /** Путь к фото относительно public/, например './photos/guitar.jpeg' */
+  src: string;
+  /** Подпись под фото (рукописным шрифтом) */
+  caption?: string;
+}
+
 interface StageBase {
   id: string;
   /** Эмодзи-иконка этапа на карте путешествия */
@@ -28,6 +35,11 @@ interface StageBase {
   intro: string;
   /** Фрагмент финального письма, который открывается после прохождения */
   letterFragment: string;
+  /**
+   * Фото-«полароиды» этапа: показываются на вступлении и после прохождения.
+   * Положи файлы в public/photos/ — отсутствующие файлы просто не показываются.
+   */
+  photos?: StagePhoto[];
 }
 
 export interface QuizStage extends StageBase {
@@ -47,12 +59,19 @@ export interface RiddleStage extends StageBase {
   answer: string;
   /** Подсказки, открываются по очереди */
   hints: string[];
+  /** Если задано — после отгадки открывается второй шаг: пазл из фото */
+  puzzle?: {
+    photo: string;
+    caption: string;
+    /** Текст-переход от загадки к пазлу */
+    intro?: string;
+  };
 }
 
 export interface PuzzleStage extends StageBase {
   type: 'puzzle';
   /**
-   * Путь к фото относительно public/, например '/photos/us.jpg'.
+   * Путь к фото относительно public/, например '/photos/us.jpeg'.
    * Положи фото в папку public/photos/ и укажи путь здесь.
    * Если фото нет — покажется красивая иллюстрация-заглушка.
    */
@@ -60,7 +79,13 @@ export interface PuzzleStage extends StageBase {
   caption: string;
 }
 
-export type Stage = QuizStage | MemoryStage | RiddleStage | PuzzleStage;
+export interface TimelineStage extends StageBase {
+  type: 'timeline';
+  /** События В ПРАВИЛЬНОМ порядке — игроку они показываются перемешанными */
+  events: string[];
+}
+
+export type Stage = QuizStage | MemoryStage | RiddleStage | PuzzleStage | TimelineStage;
 
 export const config = {
   herName: 'Даша',
@@ -100,6 +125,26 @@ export const config = {
 
   /** Подпись под письмом */
   letterSignature: 'С любовью, твой самый счастливый человек 💗',
+
+  /**
+   * Слайдшоу «Наше лето в кадрах» в финале (акт 2).
+   * Кадры с отсутствующими файлами пропускаются автоматически.
+   */
+  slideshowTitle: 'Наше лето в кадрах',
+  finaleSlides: [
+    { src: './photos/guitar.jpeg', caption: 'Вечер под гитару — начало всего' },
+    { src: './photos/competition.jpeg', caption: 'Ты на трибуне — моя главная мотивация' },
+    { src: './photos/gameroom.jpeg', caption: 'Фильм под пледом в игровой' },
+    { src: './photos/piter.jpeg', caption: 'Питер: Эрмитаж и футбольные чудеса' },
+    { src: './photos/nizhny.jpeg', caption: 'Нижний: гол на 90-й минуте' },
+    { src: './photos/city.jpeg', caption: 'Москва-Сити: финал ЧМ всей компанией' },
+  ] as StagePhoto[],
+
+  /** Большая финальная фотография после письма */
+  finalePhoto: {
+    src: './photos/final.jpeg',
+    caption: 'Арно + Даша = ❤️. Лето 2026.',
+  } as StagePhoto,
 
   stages: [
     {
@@ -190,6 +235,12 @@ export const config = {
         'Его меняют зимой / летом',
         'Оно прокололось — и, кажется, это была судьба',
       ],
+      puzzle: {
+        photo: './photos/guitar.jpeg',
+        caption: 'Тот самый вечер под гитару',
+        intro: 'А теперь собери фотографию того самого вечера, куда мы всё-таки доехали!',
+      },
+      photos: [{ src: './photos/guitar.jpeg', caption: 'Вечер под гитару' }],
     },
     {
       id: 'final4',
@@ -201,6 +252,10 @@ export const config = {
         'Ты пришла на мою игру, а закончился вечер фильмом под пледом в игровой комнате. ' +
         'Вспомним, как это было?',
       letterFragment: '',
+      photos: [
+        { src: './photos/competition.jpeg', caption: 'Финал 4-х' },
+        { src: './photos/gameroom.jpeg', caption: 'Вечер в игровой' },
+      ],
       questions: [
         {
           question: 'На какое событие я тебя позвал?',
@@ -239,16 +294,23 @@ export const config = {
     },
     {
       id: 'confession',
-      type: 'puzzle',
-      emoji: '🍓',
-      title: 'Фруктовая тарелка',
-      subtitle: 'Вечер признания',
+      type: 'timeline',
+      emoji: '🪁',
+      title: 'Пикник, которого не было',
+      subtitle: 'День признания',
       intro:
-        'Мы зашли ко мне в гости «ненадолго», ты приготовила фруктовую тарелку, ' +
-        'а я в тот вечер признался, что ты мне очень нравишься. Собери картинку из того времени!',
+        'Мы собирались на пикник в парк: я купил воздушного змея, взял бадминтон и плед. ' +
+        'Но у этого дня был свой план — и он оказался даже лучше. ' +
+        'Восстанови тот день: расставь события в правильном порядке!',
       letterFragment: '',
-      photo: '/photos/confession.jpg',
-      caption: 'Вечер, когда я сказал главное',
+      events: [
+        'Договорились встретиться после твоего университета и пойти на пикник',
+        'Я купил воздушного змея и взял бадминтон с пледом',
+        'Встретил тебя — а ты слишком красиво и стильно одета для лежаний на траве',
+        'Решили зайти ко мне: переодеться и бросить вещи',
+        'Засиделись за разговорами — и никуда уже не пошли',
+        'Я признался, что ты мне очень нравишься',
+      ],
     },
     {
       id: 'pond',
@@ -276,6 +338,10 @@ export const config = {
         'Наше первое путешествие: Эрмитаж, футбольные чудеса, знакомства с моими братьями и друзьями и самый страшный аттракцион. ' +
         'Финальная викторина — самая большая!',
       letterFragment: '',
+      photos: [
+        { src: './photos/piter.jpeg', caption: 'Питер' },
+        { src: './photos/nizhny.jpeg', caption: 'Нижний Новгород' },
+      ],
       questions: [
         {
           question: 'Про что я рассказывал тебе в Эрмитаже, пока ты рассказывала мне про картины?',

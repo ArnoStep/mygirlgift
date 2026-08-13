@@ -6,6 +6,8 @@ import Quiz from '../stages/Quiz';
 import MemoryPairs from '../stages/MemoryPairs';
 import WordRiddle from '../stages/WordRiddle';
 import PhotoPuzzle from '../stages/PhotoPuzzle';
+import Timeline from '../stages/Timeline';
+import { PolaroidRow } from '../components/Polaroid';
 
 interface Props {
   stage: Stage;
@@ -55,6 +57,7 @@ export default function StageScreen({ stage, onDone, onBack }: Props) {
             <div className="card">
               <p className="stage-intro-text">{stage.intro}</p>
             </div>
+            <PolaroidRow photos={stage.photos} />
             <button className="btn-primary" onClick={() => setPhase('playing')}>
               Играем!
             </button>
@@ -71,7 +74,10 @@ export default function StageScreen({ stage, onDone, onBack }: Props) {
             {stage.type === 'quiz' && <Quiz stage={stage} onComplete={complete} />}
             {stage.type === 'memory' && <MemoryPairs stage={stage} onComplete={complete} />}
             {stage.type === 'riddle' && <WordRiddle stage={stage} onComplete={complete} />}
-            {stage.type === 'puzzle' && <PhotoPuzzle stage={stage} onComplete={complete} />}
+            {stage.type === 'puzzle' && (
+              <PhotoPuzzle photo={stage.photo} caption={stage.caption} onComplete={complete} />
+            )}
+            {stage.type === 'timeline' && <Timeline stage={stage} onComplete={complete} />}
           </motion.div>
         )}
 
@@ -93,6 +99,7 @@ export default function StageScreen({ stage, onDone, onBack }: Props) {
             >
               «{stage.letterFragment}»
             </motion.div>
+            <PolaroidRow photos={stage.photos} />
             <button className="btn-primary" onClick={onDone}>
               К карте путешествия
             </button>

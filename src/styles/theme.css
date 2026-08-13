@@ -579,6 +579,258 @@ button {
   box-shadow: var(--shadow-card);
 }
 
+/* ---------- Полароид ---------- */
+
+.polaroid-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 6px 0;
+}
+
+.polaroid {
+  background: var(--white);
+  padding: 8px 8px 6px;
+  border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(143, 42, 85, 0.18);
+  max-width: 46%;
+}
+
+.polaroid.large {
+  max-width: 88%;
+  margin: 0 auto;
+}
+
+.polaroid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
+.polaroid.large img {
+  aspect-ratio: 4 / 5;
+}
+
+.polaroid figcaption {
+  font-family: var(--font-hand);
+  font-size: 17px;
+  color: var(--text);
+  text-align: center;
+  padding: 6px 2px 2px;
+  line-height: 1.2;
+}
+
+.polaroid.large figcaption {
+  font-size: 22px;
+}
+
+/* ---------- Таймлайн «Восстанови вечер» ---------- */
+
+.timeline-help {
+  font-size: 14px;
+  color: var(--text-soft);
+  text-align: center;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px;
+  border-radius: var(--radius-md);
+  background: var(--pink-50);
+  border: 2px solid var(--pink-100);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.timeline-item.wrong {
+  background: #fdecec;
+  border-color: #f0a0a0;
+  animation: shake 0.35s ease;
+}
+
+.timeline-item.right {
+  background: #e9fbef;
+  border-color: #7fd8a0;
+}
+
+.timeline-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--pink-300);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.timeline-text {
+  flex: 1;
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+.timeline-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.arrow-btn {
+  width: 30px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--white);
+  border: 1.5px solid var(--pink-200);
+  color: var(--pink-600);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.arrow-btn:disabled {
+  opacity: 0.3;
+}
+
+.timeline-feedback {
+  margin-top: 12px;
+  font-size: 13.5px;
+  color: var(--rose-deep);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ---------- Плавающие сердца ---------- */
+
+.floating-hearts {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.floating-hearts span {
+  position: absolute;
+  bottom: -30px;
+  opacity: 0;
+  animation-name: float-up;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes float-up {
+  0% {
+    transform: translateY(0) rotate(-8deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-110vh) rotate(10deg);
+    opacity: 0;
+  }
+}
+
+/* ---------- Слайдшоу финала ---------- */
+
+.finale-act {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.slideshow-title {
+  font-family: var(--font-hand);
+  font-size: 38px;
+  color: var(--pink-600);
+}
+
+.slideshow {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  background: var(--white);
+  cursor: pointer;
+}
+
+.slide {
+  position: relative;
+}
+
+.slide-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  animation: ken-burns 5s ease-out forwards;
+}
+
+@keyframes ken-burns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.slide-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 28px 16px 14px;
+  background: linear-gradient(transparent, rgba(74, 20, 44, 0.72));
+  color: var(--white);
+  font-family: var(--font-hand);
+  font-size: 24px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.slide-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.slide-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--pink-200);
+  padding: 0;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.slide-dot.active {
+  background: var(--pink-500);
+  transform: scale(1.25);
+}
+
 /* ---------- Финал ---------- */
 
 .finale-screen {
