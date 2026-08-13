@@ -137,7 +137,7 @@ export const config = {
     { src: './photos/gameroom.jpeg', caption: 'Фильм под пледом в игровой' },
     { src: './photos/piter.jpeg', caption: 'Питер: Эрмитаж и футбольные чудеса' },
     { src: './photos/nizhny.jpeg', caption: 'Нижний: гол на 90-й минуте' },
-    { src: './photos/city.jpeg', caption: 'Москва-Сити: финал ЧМ всей компанией' },
+    { src: './photos/city.jpeg', caption: 'Мы. 2026' },
   ] as StagePhoto[],
 
   /** Большая финальная фотография после письма */
