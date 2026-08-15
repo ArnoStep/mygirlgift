@@ -5,7 +5,6 @@ import { config, type StagePhoto } from '../content';
 import Polaroid from '../components/Polaroid';
 
 const CONFETTI_COLORS = ['#f96ba4', '#ffc9de', '#ffffff', '#e94e8a', '#f0b84c'];
-const BURST_MS = 7000;
 const SLIDE_MS = 4200;
 
 const heartShape = confetti.shapeFromText({ text: '💗', scalar: 2 });
@@ -75,15 +74,14 @@ export default function Finale({ onBack }: Props) {
   const [act, setAct] = useState<Act>('burst');
   const [slideIdx, setSlideIdx] = useState(0);
   const slides = useLoadedPhotos(config.finaleSlides);
-  const fired = useRef(false);
 
-  // Акт 1: долгий фейерверк с конфетти-сердечками
+  // Акт 1: фейерверк с конфетти-сердечками — идёт, пока не нажмут «Дальше»
   useEffect(() => {
-    if (fired.current) return;
-    fired.current = true;
+    if (act !== 'burst') return;
 
-    const end = Date.now() + BURST_MS;
+    let active = true;
     const frame = () => {
+      if (!active) return;
       confetti({
         particleCount: 3,
         angle: 60,
@@ -106,16 +104,13 @@ export default function Finale({ onBack }: Props) {
         startVelocity: 25,
         origin: { x: Math.random(), y: 0.6 },
       });
-      if (Date.now() < end) requestAnimationFrame(frame);
+      requestAnimationFrame(frame);
     };
     frame();
-  }, []);
 
-  // Автопереход из акта 1
-  useEffect(() => {
-    if (act !== 'burst') return;
-    const timer = setTimeout(() => setAct('slides'), BURST_MS);
-    return () => clearTimeout(timer);
+    return () => {
+      active = false;
+    };
   }, [act]);
 
   // Если фото для слайдшоу нет — сразу к письму
